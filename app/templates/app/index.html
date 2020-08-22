@@ -1,0 +1,133 @@
+{% extends 'app/base.html' %}
+
+{% block title %}Fepisode{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <form class="col col-sm-12" method="GET" action="">
+                <div class="form-group">
+                    <input id="search_input" type="text" class="form-control autocomplete" name="movie_name"
+                        placeholder="Movie/Tv Series Name" autocomplete="off">
+                </div>
+            <button class="btn btn-light" id="search" type="submit" name="action">Search
+            </button>
+
+        </form>
+    </div>
+</div>
+{% if movies %}
+<div class="container">
+    <ul>
+    {% for movie in movies %}
+            <li><div class="row" style="border: 1px solid; border-radius: 5px;">
+                <div >
+                    <div class="col s2" style="">
+                        <img src="{{ movie.img }}" style="width: 100px;" >
+                    </div>
+                    <div class="col s9">
+                        <h5>{{ movie.title }}</h5>
+                        <p>{{ movie.plot|truncatechars:100 }}</p>
+                    </div>
+                    </div>
+                </div>
+            </li>
+    {% endfor %}
+    </ul>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block js %}
+<script>
+    console.log('Hello')
+    // $('#search').on('click', function(e){
+    //     e.preventDefault();
+        
+    //     var search_string = $('#search_input').val();
+
+    //     $.ajax({
+    //         type: 'GET',
+    //         url: '{% url "search_movie" %}',
+    //         contentType: 'application/json; charset=utf-8',
+    //         dataType: 'json',
+    //         data: {'search_string': search_string },
+    //         success: function(data){
+    //             console.log('success')
+    //             console.log(typeof(data))
+    //         },
+    //         error: function(){
+    //             console.log('error')
+    //         }
+    //     });
+    // });
+    $(document).ready( function() {
+    var data = [
+      {
+          label: 'shameless',
+          img: 'https://m.media-amazon.com/images/M/MV5BYzFmODNkNDMtOTgzMy00NzQ1LWEwNDItNzU1MmYyYThhYzUwXkEyXkFqcGdeQXVyOTA3MTMyOTk@._V1_SY150_CR6,0,101,150_.jpg',
+          year: '2020'
+      },
+      {
+          label: 'shamm',
+          img: 'https://m.media-amazon.com/images/M/MV5BYzFmODNkNDMtOTgzMy00NzQ1LWEwNDItNzU1MmYyYThhYzUwXkEyXkFqcGdeQXVyOTA3MTMyOTk@._V1_SY150_CR6,0,101,150_.jpg',
+          year: '2020'
+      }
+    ];
+    $("#search_input").autocomplete({
+        source : data,
+        source: function(request, response) {
+            $.ajax({
+                type: 'GET',
+                url: '{% url "search_movie" %}',
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                data: {'search_string': request.term },
+                success: function(data){
+                    console.log('success', data.length);
+                    response(data);
+                },
+                error: function(data){
+                    console.log('error', data)
+                }
+            });
+        },
+        minlength: 0,
+        focus: function( event, ui ) {
+            $( "#search_input" ).val( ui.item.label );
+            return false;
+      },
+      select: function( event, ui ) {
+        $( "#search_input" ).val( ui.item.label );
+        if(ui.item.slug !== '' || ui.item.slug !== null){
+            //saved
+            var url_m = '{% url "movie_detail" slug=0 %}';
+            url_m = url_m.replace('0', ui.item.slug) ;
+            $(location).attr('href', url_m);
+        }else{
+            url_m = '{% url "movie_save" imdbid=0 %}';
+            url_m = url_m.replace('0', ui.item.imdbid) ;
+            $(location).attr('href', url_m);
+        }
+        // return false;
+      }
+    }).data('ui-autocomplete')._renderItem = function(ul, item){
+      return $("<li class='ui-autocomplete-row'></li>")
+        .data("item.autocomplete", item)
+        .append("<img src=" + item.img + "width='50' height='70' style='margin: auto;' />" )
+        .append('<b>' + item.label + '</b> <span>(' + item.year + ')</span>')
+        .appendTo(ul);
+    };
+    // .autocomplete( "instance" )._renderItem = function( ul, item ) {
+    //   return $( "<li>" )
+    //     .append("<div class='container'><div class='row'><div class='col col-sm-1 col-md-1 col-lg-1'>")
+    //     .append("<img src="+ item.img + " width='50px' height='70px' ></div>")
+    //     .append("<div class='col col-sm-4 col-md-4 col-lg-4'><p><b>" + item.label + "</b>")
+    //     .append(""+ item.year + ")" + "</p></div></div></div>" )
+    //     .appendTo( ul );
+    // };
+
+    });
+    
+</script>
+{% endblock %}
