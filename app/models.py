@@ -10,12 +10,9 @@ class BaseMovie(models.Model):
     slug = models.SlugField(unique=True, null=True)
     title = models.CharField(max_length=250)
     plot = models.TextField()
-    vote = models.DecimalField(blank=True, decimal_places=2, max_digits=4, validators=[
-        MaxValueValidator(10)
-    ])
-    cover_url = models.TextField()
+    cover_url = models.TextField(blank=True, null=True)
     year = models.CharField(max_length=4, null=True)
-    rating = models.CharField(max_length=5, null=True)
+    rating = models.DecimalField(decimal_places=2, max_digits=5, null=True)
     release_date = models.DateField(blank=True, null=True)
 
     class Meta:
@@ -39,7 +36,6 @@ class Genre(models.Model):
 
 class Movie(BaseMovie):
     is_series = models.BooleanField(default=False)
-    kind = models.CharField(max_length=30, null=True)
     directors = models.ManyToManyField(Cast, related_name='directors', blank=True)
     genres = models.ManyToManyField(Genre, related_name='genres', blank=True)
 
@@ -50,7 +46,7 @@ class Movie(BaseMovie):
         # generate slug on save
         if not self.slug:
             slug_title = slugify(self.title)
-            self.slug = "{}-{}".format(slug_title, self.imdb_id)
+            self.slug = "{}-{}".format(slug_title, self.imdbid)
         super().save(*args, **kwargs)
 
 
@@ -65,10 +61,13 @@ class Episode(BaseMovie):
         return '{} S{}E{}'.format(self.title, self.season, self.episode_number)
 
     def save(self, *args, **kwargs):
+        # movie_slug = args[0].get('movie_slug', None)
+        movie_slug = self.movie.slug
+        if movie_slug is None:
+            raise ValueError
         if not self.slug:
-            movie_slug = slugify(self.movie.slug)
             self.slug = "{}--S{}E{}-{}".format(movie_slug, self.season, self.episode_number, self.imdbid)
-
+        super().save(*args, **kwargs)
 
 
 class Users(models.Model):

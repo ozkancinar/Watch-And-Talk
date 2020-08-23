@@ -1,6 +1,5 @@
 from imdb import IMDb
 
-
 class Imdb:
 
     def __init__(self):
@@ -27,6 +26,7 @@ class Imdb:
         return result
 
     def fetch_movie_details(self, movieID):
+        season_episodes = {}
         episodes = {}
         movie_finder = IMDb()
         movie = movie_finder.get_movie(movieID)
@@ -36,25 +36,26 @@ class Imdb:
             movie_finder.update(movie, 'episodes')
             number_seasons = movie['number of seasons']
             for season_num in range(1, number_seasons + 1):
-                season = IMDb.sortedEpisodes(movie, season=season_num)
-                # season = movie['episodes'][season_num]
+                season = movie['episodes'][season_num]
+                episodes[season_num] = []
                 for key, episode in season.items():
-                    episodes[key] = {
+                    episodes[season_num].append({
                         'imdbid': episode.movieID,
                         'title': episode['title'],
-                        'year': episode['year'],
+                        'year': episode.get('year', None),
                         'img': episode.get('cover url', None),
                         'plot': episode['plot'],
                         'rating': episode.get('rating', None),
-                        'release_date': ''
-                    }
+                        'release_date': None
+                    })
+
         movie_detail = {
             'imdbid': movieID,
             'title': movie['title'],
             'img': movie['full-size cover url'],
-            'year': movie['year'],
+            'year': movie.get('year', None),
             'kind': movie['kind'],
-            'directors': [director for director in movie['directors'] ],
+            'directors': [],
             'plot': movie['plot'],  # list
             'rating': movie['rating'],
             'genres': movie['genres'],
@@ -63,6 +64,8 @@ class Imdb:
             'episodes': episodes,
             'series years': movie.get('series years', None)
         }
+        if 'directors' in movie:
+            movie_detail['directors'] = [director for director in movie['directors']]
         return movie_detail
 
     def save_movie_to_db(self):
