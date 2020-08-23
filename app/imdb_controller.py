@@ -32,6 +32,8 @@ class Imdb:
         movie = movie_finder.get_movie(movieID)
         if movie is None:
             raise ValueError
+        if movie['kind'] != 'tv series' and movie['kind'] != 'movie':
+            raise ValueError
         if movie['kind'] == 'tv series':
             movie_finder.update(movie, 'episodes')
             number_seasons = movie['number of seasons']
@@ -44,20 +46,20 @@ class Imdb:
                         'title': episode['title'],
                         'year': episode.get('year', None),
                         'img': episode.get('cover url', None),
-                        'plot': episode['plot'],
-                        'rating': episode.get('rating', None),
+                        'plot': episode['plot'].split('::')[0].strip(),
+                        'rating': episode.get('rating', 0),
                         'release_date': None
                     })
 
         movie_detail = {
             'imdbid': movieID,
             'title': movie['title'],
-            'img': movie['full-size cover url'],
+            'img': None,
             'year': movie.get('year', None),
             'kind': movie['kind'],
             'directors': [],
-            'plot': movie['plot'],  # list
-            'rating': movie['rating'],
+            'plot': '',
+            'rating': movie.get('rating', None),
             'genres': movie['genres'],
             'number of seasons': movie.get('number of seasons', None),
             'number of episodes': movie.get('number of episodes', None),
@@ -66,6 +68,15 @@ class Imdb:
         }
         if 'directors' in movie:
             movie_detail['directors'] = [director for director in movie['directors']]
+        if 'plot' in movie:
+            movie_detail['plot'] = movie['plot'][0].split('::')[0].strip()
+            # 'plot': movie['plot'][0].split('::')[0].strip(),  # list
+        if 'full-size cover url' in movie:
+            movie_detail['img'] = movie['full-size cover url']
+        elif 'cover url' in movie:
+            movie_detail['img'] = movie['cover url']
+        else:
+            movie_detail['img'] = None
         return movie_detail
 
     def save_movie_to_db(self):

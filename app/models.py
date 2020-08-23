@@ -7,16 +7,17 @@ from django.utils.text import slugify
 # Create your models here.
 class BaseMovie(models.Model):
     imdbid = models.CharField(max_length=8, unique=True)
-    slug = models.SlugField(unique=True, null=True)
+    slug = models.SlugField(unique=True, null=True, max_length=500)
     title = models.CharField(max_length=250)
     plot = models.TextField()
-    cover_url = models.TextField(blank=True, null=True)
+    cover_url = models.URLField(blank=True, null=True)
     year = models.CharField(max_length=4, null=True)
     rating = models.DecimalField(decimal_places=2, max_digits=5, null=True)
     release_date = models.DateField(blank=True, null=True)
 
     class Meta:
         abstract = True
+        ordering = ('imdbid',)
 
 
 class Cast(models.Model):

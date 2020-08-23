@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .imdb_controller import Imdb
 from django.http import JsonResponse, Http404, HttpResponseRedirect, HttpResponseBadRequest
 from .models import Movie, Episode, Cast, Genre
+from .controllers.movies_controller import *
 from django.urls import reverse
 import json
 
@@ -65,40 +66,47 @@ def movie_save(request):
     imdbid = data.get('imdbid', None)
     if imdbid is None:
         raise ValueError
-    searcher = Imdb()
-    try:
-        movie_detail = searcher.fetch_movie_details(imdbid)
-    except ValueError:
-        raise Http404
-    movie = Movie(imdbid=movie_detail['imdbid'], title=movie_detail['title'], cover_url=movie_detail['img'],
-                  year=movie_detail['year'], plot=movie_detail['plot'],
-                  rating=movie_detail['rating'])
-    try:
-        movie.save()
-    except IntegrityError:
-        return JsonResponse({'error': 'Already exists'}, status=400)
-    for director_name in movie_detail['directors']:
-        director, created = Cast.objects.get_or_create(name=director_name)
-        movie.directors.add(director)
-    for genre_name in movie_detail['genres']:
-        genre, created = Genre.objects.get_or_create(title=genre_name)
-        movie.genres.add(genre)
 
-    if movie_detail['kind'] == 'tv series':
-        movie.is_series = True
-        episode_number = 1
-        season_compare = 0
-        for season, episodes in movie_detail['episodes'].items():
-            episode_number = 1
-            for episode in episodes:
-                # if season_compare != season:
-                #     episode_number = 1
-                episode = Episode(season=season, episode_number=episode_number, imdbid=episode['imdbid'], title=episode['title'],
-                                  year=episode.get('year', None), cover_url=episode['img'], plot=episode['plot'],
-                                  rating=episode['rating'], release_date=episode.get('release_date', None))
-                episode.movie = movie
-                episode_number += 1
-                episode.save()
-    slug = movie.slug
+    save_result = save_movie(imdbid)
+    if save_result['result'] == False:
+        return JsonResponse({'error': save_result['msg']}, status=404)
+    else:
+        return JsonResponse(json.dumps({'slug': save_result['movie'].slug}), status=200, safe=False)
 
-    return JsonResponse(json.dumps({'slug': slug}), status=200, safe=False)
+    # searcher = Imdb()
+    # try:
+    #     movie_detail = searcher.fetch_movie_details(imdbid)
+    # except ValueError:
+    #     raise Http404
+    # movie = Movie(imdbid=movie_detail['imdbid'], title=movie_detail['title'], cover_url=movie_detail['img'],
+    #               year=movie_detail['year'], plot=movie_detail['plot'],
+    #               rating=movie_detail['rating'])
+    # try:
+    #     movie.save()
+    # except IntegrityError:
+    #     return JsonResponse({'error': 'Already exists'}, status=400)
+    # for director_name in movie_detail['directors']:
+    #     director, created = Cast.objects.get_or_create(name=director_name)
+    #     movie.directors.add(director)
+    # for genre_name in movie_detail['genres']:
+    #     genre, created = Genre.objects.get_or_create(title=genre_name)
+    #     movie.genres.add(genre)
+    #
+    # if movie_detail['kind'] == 'tv series':
+    #     movie.is_series = True
+    #     episode_number = 1
+    #     season_compare = 0
+    #     for season, episodes in movie_detail['episodes'].items():
+    #         episode_number = 1
+    #         for episode in episodes:
+    #             # if season_compare != season:
+    #             #     episode_number = 1
+    #             episode = Episode(season=season, episode_number=episode_number, imdbid=episode['imdbid'], title=episode['title'],
+    #                               year=episode.get('year', None), cover_url=episode['img'], plot=episode['plot'],
+    #                               rating=episode['rating'], release_date=episode.get('release_date', None))
+    #             episode.movie = movie
+    #             episode_number += 1
+    #             episode.save()
+    # slug = movie.slug
+    #
+    # return JsonResponse(json.dumps({'slug': slug}), status=200, safe=False)
