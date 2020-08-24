@@ -41,15 +41,28 @@ class Imdb:
                 season = movie['episodes'][season_num]
                 episodes[season_num] = []
                 for key, episode in season.items():
+                    if 'full-size cover url' in episode:
+                        img = episode['full-size cover url']
+                    elif 'cover url' in episode:
+                        img = episode['fcover url']
+                    else:
+                        img = None
+                    rating = episode.get('rating', None)
+                    if rating is not None:
+                        if rating > 10:
+                            rating = None
+                    else:
+                        rating = episode.get('rating', None)
                     episodes[season_num].append({
                         'imdbid': episode.movieID,
                         'title': episode['title'],
                         'year': episode.get('year', None),
-                        'img': episode.get('cover url', None),
+                        'img': img,
                         'plot': episode['plot'].split('::')[0].strip(),
-                        'rating': episode.get('rating', 0),
+                        'rating': rating,
                         'release_date': None
                     })
+
 
         movie_detail = {
             'imdbid': movieID,
@@ -60,7 +73,7 @@ class Imdb:
             'directors': [],
             'plot': '',
             'rating': movie.get('rating', None),
-            'genres': movie['genres'],
+            'genres': movie.get('genres', []),
             'number of seasons': movie.get('number of seasons', None),
             'number of episodes': movie.get('number of episodes', None),
             'episodes': episodes,
