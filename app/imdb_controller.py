@@ -18,13 +18,13 @@ class Imdb:
                 'title': movie['title'],
                 'img': movie['full-size cover url'],
                 'year': movie['year'],
-                'kind': movie['kind']
+                'kind': movie.get('kind', None),
                 # 'plot': movie_detail['plot'],
-                # 'rating': movie_detail['rating']
+                'rating': movie.get('rating')
             }
             result.append(result_obj)
         return result
-
+    
     def fetch_movie_details(self, movieID):
         season_episodes = {}
         episodes = {}

@@ -1,0 +1,28 @@
+{% extends 'app/base.html' %}
+{% block title %}Search{% endblock %}
+
+{% block content %}
+    {% include 'app/search_bar.html' %}
+    <div class="container">
+    <ul>
+        {% if not movies %}
+            <H4>Not found</H4>
+        {% endif %}
+        {% for movie in movies %}
+        <li>
+            <div class="row" style="border: 1px solid; border-radius: 5px;">
+                <div>
+                    <div class="col col-sm-12" style="">
+                        <img src="{{ movie.img }}" style="width: 100px;">
+                    </div>
+                    <div class="col col-sm-9">
+                        <h5>{{ movie.title }}</h5>
+                        <p>{{ movie.plot|truncatechars:100 }}</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

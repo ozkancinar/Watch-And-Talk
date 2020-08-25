@@ -54,11 +54,13 @@ def save_movie(imdbid):
 
 def save_movie_to_db(imdbid, logger=logging.getLogger()):
     try:
-        logger.info('try %s', imdbid)
+        # logger.info('try %s', imdbid)
         result = save_movie(imdbid)
         if result['result'] == True:
             # print('{} ({}) Saved - Key:{}'.format(result['movie'].title, result['movie'].year, str(i)))
             logger.info('%s (%s) Saved - Key:%s', result['movie'].title, str(result['movie'].year), imdbid)
+        else:
+            logger.error('%s %s', result['msg'], imdbid)
     except Exception as e:
         logger.exception('Hata: %s %s', imdbid, e)
 
@@ -95,10 +97,13 @@ def save_all_movies_from_imdb(start_index=1, limit=9999999):
     logger.info('start {}-{}'.format(str(start_index), str(limit)))
     # for a in range(start_index, limit, 100):
     #     pass
-    a = int((limit - start_index) / 2)
+    a = int((limit - start_index) / 3)
     p1 = multiprocessing.Process(target=save_movie_in_range, args=(start_index, start_index + a, logger))
-    p2 = multiprocessing.Process(target=save_movie_in_range, args=(start_index + a, limit, logger))
+    p2 = multiprocessing.Process(target=save_movie_in_range, args=(start_index+a, start_index+a*2, logger))
+    p3 = multiprocessing.Process(target=save_movie_in_range, args=(start_index+a*2, start_index+limit, logger))
     p1.start()
     p2.start()
+    p3.start()
     p1.join()
     p2.join()
+    p3.join()

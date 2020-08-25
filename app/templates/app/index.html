@@ -3,19 +3,8 @@
 {% block title %}Fepisode{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="row">
-        <form class="col col-sm-12" method="GET" action="">
-            <div class="form-group">
-                <input id="search_input" type="text" class="form-control autocomplete" name="movie_name"
-                    placeholder="Movie/Tv Series Name" autocomplete="off">
-            </div>
-            <button class="btn btn-light" id="search" type="submit" name="action">Search
-            </button>
+{% include 'app/search_bar.html' %}
 
-        </form>
-    </div>
-</div>
 {% if movies %}
 <div class="container">
     <ul>
@@ -37,11 +26,11 @@
     </ul>
 </div>
 {% endif %}
+<div class="loader" hidden></div>
 {% endblock %}
 
 {% block js %}
 <script>
-    console.log('Hello')
     // $('#search').on('click', function(e){
     //     e.preventDefault();
 
@@ -63,21 +52,8 @@
     //     });
     // });
     $(document).ready(function () {
-        var data = [
-            {
-                label: 'shameless',
-                img: 'https://m.media-amazon.com/images/M/MV5BYzFmODNkNDMtOTgzMy00NzQ1LWEwNDItNzU1MmYyYThhYzUwXkEyXkFqcGdeQXVyOTA3MTMyOTk@._V1_SY150_CR6,0,101,150_.jpg',
-                year: '2020'
-            },
-            {
-                label: 'shamm',
-                img: 'https://m.media-amazon.com/images/M/MV5BYzFmODNkNDMtOTgzMy00NzQ1LWEwNDItNzU1MmYyYThhYzUwXkEyXkFqcGdeQXVyOTA3MTMyOTk@._V1_SY150_CR6,0,101,150_.jpg',
-                year: '2020'
-            }
-        ];
-        $("#search_input").autocomplete({
 
-            source: data,
+        $("#search_input").autocomplete({
             source: function (request, response) {
                 $.ajax({
                     type: 'GET',
@@ -143,8 +119,11 @@
         //     .append(""+ item.year + ")" + "</p></div></div></div>" )
         //     .appendTo( ul );
         // };
-
+        
+        
     });
 
+</script>
+<script type="module">
 </script>
 {% endblock %}
