@@ -31,26 +31,6 @@
 
 {% block js %}
 <script>
-    // $('#search').on('click', function(e){
-    //     e.preventDefault();
-
-    //     var search_string = $('#search_input').val();
-
-    //     $.ajax({
-    //         type: 'GET',
-    //         url: '{% url "search_movie" %}',
-    //         contentType: 'application/json; charset=utf-8',
-    //         dataType: 'json',
-    //         data: {'search_string': search_string },
-    //         success: function(data){
-    //             console.log('success')
-    //             console.log(typeof(data))
-    //         },
-    //         error: function(){
-    //             console.log('error')
-    //         }
-    //     });
-    // });
     $(document).ready(function () {
 
         $("#search_input").autocomplete({

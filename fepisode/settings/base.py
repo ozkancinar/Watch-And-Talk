@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 
     # third party
     'easy_thumbnails',
+    'django.contrib.postgres'
 ]
 
 MIDDLEWARE = [

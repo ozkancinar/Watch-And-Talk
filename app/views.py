@@ -7,6 +7,8 @@ from .controllers.movies_controller import *
 from django.urls import reverse
 import json
 from operator import itemgetter
+from threading import Thread
+from queue import Queue
 
 # Create your views here.
 def index(request):
@@ -77,7 +79,7 @@ def movie_save(request):
 
 def display_search_results(request):
     search_string = request.GET.get('movie_name')
-    movies = Movie.objects.filter(title__icontains=search_string).order_by('-rating')[:10]
+    movies = Movie.objects.filter(title__search=search_string)[:10]  # .order_by('-rating')[:10]
     searcher = Imdb()
     search_result = searcher.search_movie(search_string)
     result = []
@@ -94,6 +96,7 @@ def display_search_results(request):
         else:
             result[-1]['kind'] = 'movies'
     found = False
+    work_list = [] 
     for url_movie in search_result:
         for movie in movies:
             if movie.imdbid == url_movie['imdbid']:
@@ -106,11 +109,15 @@ def display_search_results(request):
                 'year': str(url_movie['year']),
                 'kind': url_movie['kind'],
             })
+            t = Thread(target=save_movie, args=(url_movie['imdbid'],))
+            t.start()
+            work_list.append(t)
+        
         found = False
 
     #TODO: sort by relevance 
-    by_year = itemgetter('year')
-    result.sort(key=by_year, reverse=True)
+    # by_year = itemgetter('year')
+    # result.sort(key=by_year, reverse=True)
     context = {
         'movies': result
     }

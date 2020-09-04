@@ -4,6 +4,7 @@ from django.db import IntegrityError
 import logging
 import multiprocessing
 from threading import Thread
+from queue import Queue
 
 
 def save_movie(imdbid):
@@ -67,15 +68,19 @@ def save_movie_to_db(imdbid, logger=logging.getLogger()):
 
 def save_movie_in_range(start, end, logger):
     for i in range(start, end, 10):
+        # threads = Queue(10)
         threads = []
         for j in range(10):
             imdbid = '{0:0>7}'.format(i + j)
             try:
                 t = Thread(target=save_movie_to_db, args=(imdbid, logger))
+                t.daemon = True
                 t.start()
+                # threads.put(t)
                 threads.append(t)
             except Exception as e:
                 logger.exception('Hata: %s %s', imdbid, e)
+        # threads.join()
         for th in threads:
             th.join()
 
@@ -97,6 +102,8 @@ def save_all_movies_from_imdb(start_index=1, limit=9999999):
     logger.info('start {}-{}'.format(str(start_index), str(limit)))
     # for a in range(start_index, limit, 100):
     #     pass
+    # divide by 3 workers
+    # each worker has 10 thread
     a = int((limit - start_index) / 3)
     p1 = multiprocessing.Process(target=save_movie_in_range, args=(start_index, start_index + a, logger))
     p2 = multiprocessing.Process(target=save_movie_in_range, args=(start_index+a, start_index+a*2, logger))
