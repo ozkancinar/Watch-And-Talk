@@ -1,5 +1,5 @@
 <div class="container">
-    <div class="row">
+    <div class="search-bar-group row">
         <form class="col col-sm-12 col-lg-12 col-xs-12" id='search_form' method="GET" action="{% url 'display_search_results' %}">
             <div class="form-group row">
                 <div class="col-sm-9 col-lg-9 col-xs-9">
@@ -7,14 +7,10 @@
                            placeholder="Movie/Tv Series Name" autocomplete="off">
                 </div>
                 <div class="col-sm-3" style="margin-left: -1.5em;">
-                    <button class="btn btn-success" id="search" type="submit" name="action">Search</button>
+                    <button class="btn btn-success btn-search" id="search" type="submit" name="action">Search</button>
                 </div>
             </div>
 
         </form>
     </div>
 </div>
-
-{% block js %}
-
-{% endblock %}

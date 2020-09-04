@@ -9,12 +9,13 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
     <!--Materialize-->
-<!--     <link type="text/css" rel="stylesheet" href="{% static '/css/materialize.min.css' %}"  media="screen,projection"/> -->
+    <!--     <link type="text/css" rel="stylesheet" href="{% static '/css/materialize.min.css' %}"  media="screen,projection"/> -->
     <!--Bootstrap-->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
         integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 
-    <link rel="stylesheet" href="{% static '/css/loader.css' %}">    
+    <link rel="stylesheet" href="{% static '/css/loader.css' %}">
+    <link rel="stylesheet" href="{% static '/css/style.css' %}">
     <style>
 
     </style>
@@ -40,24 +41,15 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
     integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
     crossorigin="anonymous"></script>
-<!--Materialize-->
+<script>
+    var search_url = '{% url "search_movie" %}';
+    var movie_detail_url = '{% url "movie_detail" slug=0 %}';
+    var movie_save_url = '{% url "movie_save" %}';
+</script>
+<script src="{% static '/js/main.js' %}"></script>
 
 <script>
-    var csrftoken = Cookies.get('csrftoken');
-    function csrfSafeMethod(method) {
-        // these HTTP methods do not require CSRF protection
-        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-    }
-    $.ajaxSetup({
-        beforeSend: function (xhr, settings) {
-            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                xhr.setRequestHeader("X-CSRFToken", csrftoken);
-            }
-        }
-    });
-    $('#search_form').on('submit', function(e){
-        $('.loader').prop('hidden', false);
-    });
+
 </script>
 {% block js %}
 {% endblock %}

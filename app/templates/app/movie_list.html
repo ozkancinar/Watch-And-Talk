@@ -3,20 +3,20 @@
 
 {% block content %}
     {% include 'app/search_bar.html' %}
-    <div class="container">
+    <div class="container movie-list">
     <ul>
         {% if not movies %}
             <H4>Not found</H4>
         {% endif %}
         {% for movie in movies %}
-        <li>
-            <div class="row" style="border: 1px solid; border-radius: 5px;">
-                <div>
-                    <div class="col col-sm-12" style="">
-                        <img src="{{ movie.img }}" style="width: 100px;">
+        <li class="movie-list-item">
+            <div class="row">
+                <div class="list-item-detail">
+                    <div class="img-container pull-left">
+                        <img class="thumbnail-md" src="{{ movie.img }}">
                     </div>
-                    <div class="col col-sm-9">
-                        <h5>{{ movie.title }}</h5>
+                    <div class="list-item-text pull-right">
+                        <h4>{{ movie.title }}</h4>
                         <p>{{ movie.plot|truncatechars:100 }}</p>
                     </div>
                 </div>

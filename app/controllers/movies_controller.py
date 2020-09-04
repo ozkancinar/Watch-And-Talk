@@ -88,8 +88,6 @@ def save_movie_in_range(start, end, logger):
 def save_all_movies_from_imdb(start_index=1, limit=9999999):
     # from app.controllers.movies_controller import *
     # python manage.py shell --settings=fepisode.settings.dev
-    # limit = 9999999
-    # basicconfig kullanma ayrı ayrı tanımla
     formatter = logging.Formatter('%(levelname)s %(asctime)s %(message)s', datefmt='%d/%m/%Y %H:%M:%S')
     logger = logging.getLogger(__name__)
     consoleHandler = logging.StreamHandler()
@@ -100,9 +98,7 @@ def save_all_movies_from_imdb(start_index=1, limit=9999999):
     logger.addHandler(filehandler)
     logger.setLevel(logging.INFO)
     logger.info('start {}-{}'.format(str(start_index), str(limit)))
-    # for a in range(start_index, limit, 100):
-    #     pass
-    # divide by 3 workers
+    
     # each worker has 10 thread
     a = int((limit - start_index) / 3)
     p1 = multiprocessing.Process(target=save_movie_in_range, args=(start_index, start_index + a, logger))
