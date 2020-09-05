@@ -1,4 +1,5 @@
 /* Copied from https://projects.lukehaas.me/css-loaders/ */
+/*usage: <div class="loader" hidden></div> */
 .loader {
     font-size: 10px;
     margin: 50px auto;

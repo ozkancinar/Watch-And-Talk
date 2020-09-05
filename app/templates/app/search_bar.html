@@ -1,10 +1,43 @@
-<div class="container">
+<nav id="navbar" class="navbar sticky-top navbar-expand-lg">
+    <a class="navbar-brand btn btn-outline-primary" href="{% url 'index' %}">Home</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse container-fluid" id="navbarNav">
+    <div class="col col-md-8 col-lg-8 col-xs-9">
+        <form class="form-inline" id='search_form' method="GET" action="{% url 'display_search_results' %}">
+            <div class="input-group flex-fill">
+                <input id="search_input" type="text" class=" form-control autocomplete" name="movie_name"
+                    placeholder="Movie/Tv Series Name" autocomplete="off">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-success btn-search" id="search" type="submit" name="action">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col col-md-3 col-lg-3 pull-right">
+        <ul class="nav navbar-nav pull-right">
+            <li class="nav-item">
+                <a class="btn btn-outline-primary" href="#">User</a>
+            </li>
+            <li class="nav-item">
+                <a class="btn btn-outline-primary" href="#">Login</a>
+            </li>
+        </ul>
+
+    </div>
+    </div>
+    <!-- <div class="container-fluid">
     <div class="search-bar-group row">
-        <form class="col col-sm-12 col-lg-12 col-xs-12" id='search_form' method="GET" action="{% url 'display_search_results' %}">
-            <div class="form-group row">
-                <div class="col-sm-9 col-lg-9 col-xs-9">
+        <div class="pull-left" style="background-color: blueviolet;">
+            
+        </div>
+        <form class="" id='search_form' method="GET" action="{% url 'display_search_results' %}">
+            <div class="form-group col col-sm-9 col-lg-9 col-xs-9">
+                <div class="">
                     <input id="search_input" type="text" class="form-control autocomplete" name="movie_name"
-                           placeholder="Movie/Tv Series Name" autocomplete="off">
+                        placeholder="Movie/Tv Series Name" autocomplete="off">
                 </div>
                 <div class="col-sm-3" style="margin-left: -1.5em;">
                     <button class="btn btn-success btn-search" id="search" type="submit" name="action">Search</button>
@@ -13,4 +46,8 @@
 
         </form>
     </div>
-</div>
+    </div>
+    <div class="navbar-user pull-right">
+        yy
+    </div> -->
+</nav>
